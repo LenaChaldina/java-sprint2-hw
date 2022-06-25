@@ -1,40 +1,57 @@
+import java.util.ArrayList;
 import java.util.Scanner;
 
 public class Main {
+    static final int REPORT_YEAR = 2021;
 
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
-        FileUtil fileUtil = new FileUtil();
-        MonthlyReport monthlyReport = new MonthlyReport();
-        YearlyReport yearlyReport = new YearlyReport();
-        VerificationReports verificationReports = new VerificationReports();
-        MonthsConverting monthsConverting = new MonthsConverting();
+        Manager manager = new Manager();
 
         printMenu();
         int userInput = scanner.nextInt();
         while (userInput != 123) {
             if (userInput == 1) {
-                String fileName;
-                for (int monthNumber = 1; monthNumber <= monthsConverting.COUNT_MONTH_REPORTS; monthNumber++) {
-                    fileUtil.constructMonthlyReader(monthNumber, monthlyReport);
-                }
-
-
+                manager.getMonthlyReport();
             } else if (userInput == 2) {
-                fileUtil.constructYearlyReader("resources/y.2021.csv", yearlyReport);
-
+                manager.getYearlyReport();
             } else if (userInput == 3) {
-                verificationReports.verification(monthlyReport, yearlyReport);
+                if (manager.verificationMonthlyIncome().isEmpty() && manager.verificationMonthlyExpense().isEmpty()) {
+                    System.out.println("Операция успешно завершена");
+                } else if (!manager.verificationMonthlyIncome().isEmpty() && manager.verificationMonthlyExpense().isEmpty()) {
+                    for (Integer income : manager.verificationMonthlyIncome()) {
+                        System.out.println("Обнаружено несоответствие в доходах в месяце: " + income);
+                    }
+                    System.out.println(manager.verificationMonthlyIncome());
+                } else if (manager.verificationMonthlyIncome().isEmpty() && !manager.verificationMonthlyExpense().isEmpty()) {
+                    for (Integer expense : manager.verificationMonthlyExpense()) {
+                        System.out.println("Обнаружено несоответствие в расходах в месяце: " + expense);
+                    }
+                } else {
+                    for (Integer income : manager.verificationMonthlyIncome()) {
+                        System.out.println("Обнаружено несоответствие в доходах в месяце: " + income);
+                    }
+                    for (Integer expense : manager.verificationMonthlyExpense()) {
+                        System.out.println("Обнаружено несоответствие в расходах в месяце: " + expense);
+                    }
+                }
             } else if (userInput == 4) {
-                System.out.println("Информация о всех месячных отчётах");
-                monthlyReport.printMonthlyReport();
+                System.out.println("Информация о всех месячных отчётах:");
+                for (ArrayList<String> reports : manager.getMonthlyReports()) {
+                    for (String report : reports) {
+                        System.out.println(report);
+                    }
+                }
             } else if (userInput == 5) {
                 System.out.println("Информация о годовом отчёте.");
-                System.out.println("Отчёт за: " + yearlyReport.REPORT_YEAR + " год.");
+                System.out.println("Отчёт за: " + REPORT_YEAR + " год.");
                 System.out.println("Прибыль по каждому месяцу:");
-                yearlyReport.monthlyProfit();
-                System.out.println("Cредний доход: " + yearlyReport.getYearlyIncomeAVG() +
-                        ", средний расход: " + yearlyReport.getYearlyExpenseAVG());
+                for (ArrayList<String> reports : manager.getMonthlyProfit()) {
+                    for (String report : reports) {
+                        System.out.println(report);
+                    }
+                }
+                System.out.println("Cредний доход: " + manager.getYearlyIncomeAVG() + ", средний расход: " + manager.getYearlyExpenseAVG());
 
             } else {
                 System.out.println("Извините, такой команды пока нет.");

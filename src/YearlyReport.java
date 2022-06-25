@@ -6,8 +6,6 @@ public class YearlyReport {
     MonthsConverting monthsConverting = new MonthsConverting();
 
     private List<YearlyRecord> YearlyRecords;
-    static final int REPORT_YEAR = 2021;
-
     YearlyReport() {
         this.YearlyRecords = new ArrayList<>();
     }
@@ -43,7 +41,9 @@ public class YearlyReport {
     Средний доход за все месяцы в году.
 */
     //прибыль по каждому месяцу
-    public void monthlyProfit() {
+    public ArrayList<ArrayList<String>> monthlyProfit() {
+        ArrayList<String> consistMonthlyProfit= new ArrayList<>();
+        ArrayList<ArrayList<String>> consistMonthlyProfits = new ArrayList<>();
         for(int i=1; i<=monthsConverting.COUNT_MONTH_REPORTS; i++) {
             int monthlyIncome = 0;
             int monthlyExpense = 0;
@@ -54,13 +54,17 @@ public class YearlyReport {
                     monthlyExpense += yearly.amount;
                 }
             }
-            System.out.println("Месяц: " + monthsConverting.getMonth(i) + ", " + (monthlyIncome - monthlyExpense));
+            consistMonthlyProfit.add("Месяц: ");
+            consistMonthlyProfit.add(monthsConverting.getMonth(i));
+            consistMonthlyProfit.add(Integer.toString((monthlyIncome - monthlyExpense)));
         }
+        consistMonthlyProfits.add(consistMonthlyProfit);
+        return consistMonthlyProfits;
     }
     public int getYearlyIncomeAVG(){
         int sumYearlyIncome = 0;
         int avgYearlyIncome = 0;
-        int k = 0; //счётчик итераций...прастити
+        int k = 0;
         for(YearlyRecord yearly: YearlyRecords) {
             if(yearly.isExpense == false) {
                 sumYearlyIncome += yearly.amount;
@@ -70,7 +74,6 @@ public class YearlyReport {
         avgYearlyIncome = sumYearlyIncome/k;
         return avgYearlyIncome;
     }
-
     public int getYearlyExpenseAVG(){
         int sumYearlyExpense = 0;
         int avgYearlyExpense = 0;
